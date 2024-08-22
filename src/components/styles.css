@@ -1,0 +1,101 @@
+body, ul {
+   margin: 0;
+   padding: 0;
+}
+.header {
+   display: block;
+   background-color: aqua;
+   padding: 1rem 2rem;
+   color: black;
+   width:99%;
+}
+.header-container {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   box-sizing: border-box;
+  
+}
+.logo a {
+   color: black;
+   font-size: 1.5rem;
+   font-weight: bold;
+   text-decoration: none;
+}
+.nav {
+   display: flex;
+}
+.nav-links {
+   display: flex;
+   list-style: none;
+   padding:1rem;
+   margin: 0;
+}
+.nav-links li {
+   margin: 0 1rem;
+   
+}
+.nav-links a{
+   text-decoration: none;
+   justify-content: space-between;
+   font-size:1.2rem;
+   transition:color 0.3s;
+   font-weight: bolder;
+}
+.search-bar{
+   padding-right: 1rem;
+}
+.search-bar input {
+   padding: 0.5rem;
+   border-radius: 2rem;
+   font-size: 1rem;
+   border: 1px solid #ccc;
+}
+
+/*add task
+/* Form styling */
+.add-task-form {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   margin-bottom: 20px;
+}
+
+/* Input field styling */
+.add-task-form input[type="text"] {
+   width: 70%;
+   padding: 10px;
+   border: 1px solid #ccc;
+   border-radius: 5px;
+   font-size: 16px;
+   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+   margin-right: 10px;
+   transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.add-task-form input[type="text"]:focus {
+   border-color: #4CAF50;
+   box-shadow: 0 2px 8px rgba(0, 128, 0, 0.2);
+   outline: none;
+}
+
+/* Button styling */
+.add-task-form button {
+   padding: 10px 20px;
+   background-color: #4CAF50; /* Green */
+   color: white;
+   border: none;
+   border-radius: 5px;
+   font-size: 16px;
+   cursor: pointer;
+   transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.add-task-form button:hover {
+   background-color: #45a049;
+   transform: translateY(-2px);
+}
+
+.add-task-form button:active {
+   transform: translateY(1px);
+}
