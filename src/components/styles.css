@@ -46,7 +46,7 @@ body, ul {
    padding-right: 1rem;
 }
 .search-bar input {
-   padding: 0.5rem;
+   padding: 1rem;
    border-radius: 2rem;
    font-size: 1rem;
    border: 1px solid #ccc;
