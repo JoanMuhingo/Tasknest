@@ -1,0 +1,37 @@
+/* variables.css */
+
+:root {
+    --primary-color: #1ABC9C;
+    --secondary-color: #FF6F61;
+    --accent-color: #F1C40F;
+    --light-gray: #F7F7F7;
+    --dark-gray: #2C3E50;
+    --text-color: #333;
+    --completed-task-color: #BDC3C7;
+}
+
+body {
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    font-family: 'Roboto', sans-serif;
+}
+
+h1, h2, h3 {
+    font-family: 'Poppins', sans-serif;
+    color: var(--dark-gray);
+}
+
+p, span {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    color: var(--text-color);
+}
+
+@media (max-width: 768px) {
+    .App {
+        flex-direction: column;
+        padding: 10px;
+    }
+}
+
+  

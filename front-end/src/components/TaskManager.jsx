@@ -1,155 +1,99 @@
-import React, { useState, useEffect } from "react";
-import TaskList from "./TaskList";
-import AddTaskForm from "./TaskForm";
-import EditTaskForm from "./EditTaskForm";
-import axios from "axios";
+// TaskManager.jsx
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import TaskList from './TaskList';
+import TaskForm from './TaskForm';
+import EditTaskForm from './EditTaskForm';
+import './TaskManager.module.css';
+import './Animation.css';
 
-function TaskManager({ selectedTitleId, setTaskLists }) {
-  const [editTask, setEditTask] = useState(null);
-  const [selectedList, setSelectedList] = useState(null);
+const TaskManager = ({ selectedTitleId }) => {
+    const [tasks, setTasks] = useState([]);
+    const [editTask, setEditTask] = useState(null);
+    const [titleName, setTitleName] = useState('');
 
-  // Fetch tasks for the selected title
-  useEffect(() => {
-    console.log("Current selectedTitleId in TaskManager:", selectedTitleId);
-    const fetchTasks = async () => {
-      if (!selectedTitleId) return; // If no title selected, do nothing
-      try {
-        const response = await axios.get(`http://localhost:5000/titles/${selectedTitleId}`);
-        setSelectedList(response.data); // This should include tasks
-      } catch (error) {
-        console.error("Error fetching tasks:", error);
-      }
+    // Fetch tasks when selectedTitleId changes
+    useEffect(() => {
+        const fetchTasks = async () => {
+            try {
+                const response = await axios.get(`http://localhost:5000/titles/${selectedTitleId}`);
+                setTasks(response.data.tasks);
+                setTitleName(response.data.name);
+            } catch (error) {
+                console.error('Error fetching tasks:', error);
+                alert('Failed to fetch tasks. Please try again.');
+            }
+        };
+
+        if (selectedTitleId) {
+            fetchTasks();
+        }
+    }, [selectedTitleId]);
+
+    // Add a new task
+    const addTask = async (description, due_date, priority) => {
+        try {
+            const response = await axios.post(`http://localhost:5000/titles/${selectedTitleId}/tasks`, {
+                description,
+                due_date,
+                priority
+            });
+            setTasks([...tasks, response.data]);
+        } catch (error) {
+            console.error('Error adding task:', error);
+            alert('Failed to add task. Please try again.');
+        }
     };
-    fetchTasks();
-  }, [selectedTitleId]);
-  
-  const addTask = async (description) => {
-    try {
-      const response = await axios.post(
-        `http://localhost:5000/titles/${selectedTitleId}/tasks`,
-        { task_title: description }
-      );
-  
-      // Immediately update the state without needing to refetch
-      const newTask = response.data;
-  
-      // Update the tasks in the selectedList
-      setSelectedList((prevList) => ({
-        ...prevList,
-        tasks: [...prevList.tasks, newTask], // Add the new task to the existing tasks
-      }));
-  
-      // Optionally, you could also update the overall task lists
-      setTaskLists((prevLists) =>
-        prevLists.map((list) =>
-          list.id === selectedTitleId
-            ? { ...list, tasks: [...list.tasks, newTask] }
-            : list
-        )
-      );
-  
-    } catch (error) {
-      console.error("Error adding task:", error);
-    }
-  };
-  
-  
-  
-  
 
-  // Update task
-  const updateTask = async (updatedTask) => {
-    try {
-      const response = await axios.put(
-        `http://localhost:5000/tasks/${updatedTask.id}`,
-        updatedTask
-      );
-      const updatedList = {
-        ...selectedList,
-        tasks: selectedList.tasks.map((task) =>
-          task.id === updatedTask.id ? response.data : task
-        ),
-      };
-      setTaskLists((prev) =>
-        prev.map((list) => (list.id === selectedTitleId ? updatedList : list))
-      );
-      setEditTask(null);
-    } catch (error) {
-      console.error("Error updating task:", error);
-    }
-  };
+    // Delete a task
+    const deleteTask = async (taskId) => {
+        if (!window.confirm('Are you sure you want to delete this task?')) return;
 
-  // Delete task
-  const deleteTask = async (id) => {
-    try {
-      await axios.delete(`http://localhost:5000/tasks/${id}`);
-      const updatedList = {
-        ...selectedList,
-        tasks: selectedList.tasks.filter((task) => task.id !== id),
-      };
-      setTaskLists((prev) =>
-        prev.map((list) => (list.id === selectedTitleId ? updatedList : list))
-      );
-    } catch (error) {
-      console.error("Error deleting task:", error);
-    }
-  };
+        try {
+            await axios.delete(`http://localhost:5000/tasks/${taskId}`);
+            setTasks(tasks.filter(task => task.id !== taskId));
+        } catch (error) {
+            console.error('Error deleting task:', error);
+            alert('Failed to delete task. Please try again.');
+        }
+    };
 
-  // Toggle task
-  const toggleTask = async (id) => {
-    const task = selectedList.tasks.find((t) => t.id === id);
-    try {
-      const response = await axios.put(`http://localhost:5000/tasks/${id}`, {
-        done: !task.done,
-      });
-      const updatedList = {
-        ...selectedList,
-        tasks: selectedList.tasks.map((t) =>
-          t.id === id ? response.data : t
-        ),
-      };
-      setTaskLists((prev) =>
-        prev.map((list) => (list.id === selectedTitleId ? updatedList : list))
-      );
-    } catch (error) {
-      console.error("Error toggling task:", error);
-    }
-  };
+    // Update a task
+    const updateTask = async (updatedTask) => {
+        try {
+            const response = await axios.put(`http://localhost:5000/tasks/${updatedTask.id}`, updatedTask);
+            setTasks(tasks.map(task => task.id === updatedTask.id ? response.data : task));
+            setEditTask(null);
+        } catch (error) {
+            console.error('Error updating task:', error);
+            alert('Failed to update task. Please try again.');
+        }
+    };
 
-  if (!selectedList) return <div>Select a title to manage tasks.</div>;
+    // Toggle task completion
+    const toggleTask = async (taskId) => {
+        try {
+            const response = await axios.put(`http://localhost:5000/tasks/${taskId}/toggle`);
+            setTasks(tasks.map(task => task.id === taskId ? response.data : task));
+        } catch (error) {
+            console.error('Error toggling task:', error);
+            alert('Failed to toggle task. Please try again.');
+        }
+    };
 
-  return (
-    <div>
-      {/* Display the title section */}
-      <h3 style={{ cursor: "pointer" }}>
-      {selectedList ? selectedList.title : "Title not found"}
-      </h3>
-
-      {/* Conditionally render AddTaskForm based on the selected title */}
-      {!editTask && selectedList && (
-      <AddTaskForm 
-        selectedTitleId={selectedTitleId}
-        onAddTask={(description) => addTask(description)}
-      />
-      )}
-
-      {editTask ? (
-        <EditTaskForm
-          task={editTask}
-          onSave={updateTask}
-          onCancel={() => setEditTask(null)}
-        />
-      ) : null}
-
-      {/* TaskList component */}
-      <TaskList
-        tasks={selectedList ? selectedList.tasks : []}
-        onEdit={setEditTask}
-        onDelete={deleteTask}
-        onToggle={toggleTask}
-      />
-    </div>
-  );
-}
+    return (
+        <div className="task-manager" style={{ border: '1px solid #ccc', padding: '20px' }}>
+            <h2>Tasks for: {titleName}</h2>
+            <TaskForm onAddTask={addTask} />
+            {editTask && <EditTaskForm task={editTask} onUpdateTask={updateTask} onCancel={() => setEditTask(null)} />}
+            <TaskList
+                tasks={tasks}
+                onDeleteTask={deleteTask}
+                onEditTask={setEditTask}
+                onToggleTask={toggleTask}
+            />
+        </div>
+    );
+};
 
 export default TaskManager;

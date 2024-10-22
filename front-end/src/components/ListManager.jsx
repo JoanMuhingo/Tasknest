@@ -1,100 +1,71 @@
-import React, { useState, useEffect } from 'react';
+// ListManager.jsx
+import React, { useState } from 'react';
 import axios from 'axios';
-import Title from './Title';
-import TaskForm from './TaskForm';
+import './ListManager.module.css';
+const ListManager = ({ titles, setTitles, onSelectTitle }) => {
+    const [newTitle, setNewTitle] = useState('');
 
-const ListManager = ({ onSelectTitle }) => {
-  const [taskLists, setTaskLists] = useState([]);
-  const [newTitle, setNewTitle] = useState('');
-  const [selectedTitle, setSelectedTitle] = useState(null);
+    const addTitle = async () => {
+        if (!newTitle.trim()) return;
 
-  useEffect(() => {
-    fetchTaskLists();
-  }, []);
+        try {
+            const response = await axios.post('http://localhost:5000/titles', { name: newTitle });
+            setTitles([...titles, response.data]);
+            setNewTitle('');
+            onSelectTitle(response.data.id);
+        } catch (error) {
+            console.error('Error adding title:', error);
+            alert('Failed to add title. Please try again.');
+        }
+    };
 
-  const fetchTaskLists = async () => {
-    try {
-      const response = await axios.get('http://localhost:5000/titles');
-      setTaskLists(response.data);
-    } catch (error) {
-      console.error('Error fetching task lists:', error);
-    }
-  };
+    const deleteTitle = async (titleId) => {
+        if (!window.confirm('Are you sure you want to delete this title and all its tasks?')) return;
 
-  const addTaskList = async () => {
-    if (!newTitle.trim()) return;
-    try {
-      const response = await axios.post('http://localhost:5000/titles', { name: newTitle });
-      setTaskLists([...taskLists, response.data]);
-      setNewTitle('');
-      setSelectedTitle(response.data);
-      onSelectTitle(response.data.id); // Notify parent about the new title selection
-    } catch (error) {
-      console.error('Error adding task list:', error);
-    }
-  };
+        try {
+            await axios.delete(`http://localhost:5000/titles/${titleId}`);
+            setTitles(titles.filter(title => title.id !== titleId));
+            onSelectTitle(null);
+        } catch (error) {
+            console.error('Error deleting title:', error);
+            alert('Failed to delete title. Please try again.');
+        }
+    };
 
-  const handleSelectTitle = (title) => {
-    console.log("Selected Title ID:", title.id);
-    setSelectedTitle(title);
-    onSelectTitle(title.id); // Notify parent about the selected title
-  };
-
-  const handleTitleUpdate = (updatedTitle) => {
-    setTaskLists(taskLists.map((list) => (list.id === updatedTitle.id ? updatedTitle : list)));
-    setSelectedTitle(null);
-  };
-
-  const handleDeleteTitle = async (titleId) => {
-    try {
-        await axios.delete(`http://localhost:5000/titles/${titleId}`);
-        setTaskLists(taskLists.filter((list) => list.id !== titleId)); // Update state immediately
-        setSelectedTitle(null); // Deselect the title if it was deleted
-        onSelectTitle(null); // Clear selection in parent
-    } catch (error) {
-        console.error('Error deleting task list:', error);
-    }
-};
-
-
-return (
-  <div className="list-manager">
-    {!selectedTitle ? (
-      <>
-        {/* Add new title form */}
-        <div className="add-title">
-          <input
-            type="text"
-            value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
-            placeholder="Add a new title"
-          />
-          <button onClick={addTaskList}>Add Title</button>
-        </div>
-
-        {/* Display the list of titles */}
-        <ul className="titles-list">
-          {taskLists.map((title) => (
-            <li key={title.id} className="title-item">
-              {title.name}
-              <div className="title-actions">
-                <button onClick={() => handleSelectTitle(title)}>Open</button>
-                <button onClick={() => handleDeleteTitle(title.id)}>Delete</button>
+    return (
+      <div className="list-manager">
+          <h2>Titles</h2>
+          {titles.length === 0 ? ( // Check if there are no titles
+              <div className="no-titles-message">
+                  <p>No titles available. Please add a title to get started!</p>
               </div>
-            </li>
-          ))}
-        </ul>
-      </>
-    ) : (
-      <div className="task-form-container">
-        {/* Display the selected title at the top */}
-        <h2>{selectedTitle.name}</h2>
-        <button onClick={() => setSelectedTitle(null)}>Back to Titles</button>
-        
+          ) : (
+              <ul style={{ listStyleType: 'none', padding: 0 }}>
+                  {titles.map(title => (
+                      <li key={title.id} style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>
+                          <span
+                              onClick={() => onSelectTitle(title.id)}
+                              style={{ cursor: 'pointer', flexGrow: 1 }}
+                          >
+                              {title.name}
+                          </span>
+                          <button onClick={() => deleteTitle(title.id)} style={{ padding: '2px 5px' }}>Delete</button>
+                      </li>
+                  ))}
+              </ul>
+          )}
+          <div style={{ marginBottom: '10px' }}>
+              <input
+                  type="text"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  placeholder="Add new title"
+                  style={{ width: '70%', padding: '5px' }}
+              />
+              <button onClick={addTitle} style={{ padding: '5px 10px', marginLeft: '5px' }}>Add Title</button>
+          </div>
       </div>
-    )}
-  </div>
-);
+  );
 };
 
 export default ListManager;

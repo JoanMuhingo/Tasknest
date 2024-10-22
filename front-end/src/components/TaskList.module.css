@@ -1,0 +1,49 @@
+/* TaskList.css */
+
+.task-list {
+    background-color: #f0f0f0; /* Light gray background */
+    border-radius: 8px;
+    padding: 20px;
+    margin: 10px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.task-list h2 {
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 27px;
+}
+
+.task-list ul {
+    list-style-type: none; /* Remove bullet points */
+    padding: 0;
+}
+
+.task-list .task-item {
+    padding: 10px 0; /* Padding between items */
+}
+
+.task-list .task-item:last-child {
+    border-bottom: none; /* Remove border from the last item */
+}
+
+.task-list .empty-message {
+    color: #777; /* Gray color for empty message */
+    font-style: italic;
+    text-align: center;
+}
+
+.task-list .task-item.completed {
+    color: gray; /* Color for completed tasks */
+    text-decoration: line-through; /* Strikethrough for completed tasks */
+}
+
+.no-title-selected-message {
+    background-color: #fff3cd; /* Light yellow background */
+    border: 1px solid #ffeeba; /* Border color */
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+    color: #856404; /* Darker yellow color for text */
+    text-align: center;
+}

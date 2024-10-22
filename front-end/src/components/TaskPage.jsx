@@ -1,3 +1,4 @@
+// TaskPage.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ListManager from './ListManager';
@@ -26,9 +27,11 @@ const TaskPage = () => {
 
   return (
     <div>
-      <ListManager onSelectTitle={handleSelectTitle} />
+      <ListManager onSelectTitle={handleSelectTitle} setTitles={setTitles} titles={titles} />
       {selectedTitleId && (
-        <TaskManager selectedTitleId={selectedTitleId} />
+        <TaskManager
+          selectedTitleId={selectedTitleId}
+        />
       )}
     </div>
   );

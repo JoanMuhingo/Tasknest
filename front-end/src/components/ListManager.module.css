@@ -1,0 +1,59 @@
+.list-manager {
+    background-color: #f9f9f9; 
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.list-title {
+    color: #4A90E2; 
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.add-title-input {
+    margin-bottom: 10px;
+}
+
+.title-input {
+    width: 70%;
+    padding: 5px;
+}
+
+.add-list-button {
+    background-color: #4CAF50; 
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.add-list-button:hover {
+    background-color: #45a049; 
+}
+
+.title-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.title-item {
+    margin-bottom: 15px; /* Adjusted margin for space between titles */
+    display: flex;
+    align-items: center;
+}
+
+.title-name {
+    cursor: pointer;
+    flex-grow: 1;
+}
+.no-titles-message {
+    background-color: #fff3cd; /* Light yellow background */
+    border: 1px solid #ffeeba; /* Border color */
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+    color: #856404; /* Darker yellow color for text */
+    text-align: center;
+}

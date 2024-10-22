@@ -1,0 +1,34 @@
+/* src/components/TaskItem.module.css */
+
+.task-item {
+    background-color: var(--light-gray);
+    padding: 15px;
+    border-left: 5px solid var(--primary-color);
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.task-item:hover {
+    background-color: #f0f0f0;
+}
+
+.task-item.completed {
+    background-color: var(--completed-task-color);
+    text-decoration: line-through;
+}
+
+.edit-button, .delete-button {
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.edit-button:hover, .delete-button:hover {
+    background-color: #ff4c3b;
+}
