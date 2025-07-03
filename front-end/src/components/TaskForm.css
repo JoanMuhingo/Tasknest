@@ -1,0 +1,54 @@
+/* TaskForm.css */
+form {
+    background-color: var(--white);
+    padding: 20px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    max-width: 500px;
+    margin: 20px auto;
+  }
+  
+  h3 {
+    color: var(--dark-gray);
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  input, select {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--light-gray);
+    margin-bottom: 15px;
+  }
+  
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+  }
+  
+  button {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    font-size: 1.1rem;
+  }
+  
+  button:hover {
+    background-color:whitesmoke;
+  }
+  
+  label {
+    font-size: 1rem;
+    color: var(--dark-gray);
+    margin-bottom: 5px;
+    display: inline-block;
+  }
+  

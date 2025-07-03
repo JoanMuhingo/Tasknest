@@ -1,7 +1,7 @@
 // TaskList.jsx
 import React from 'react';
 import TaskItem from './TaskItem';
-import './TaskList.module.css';
+import './TaskList.css';
 
 const TaskList = ({ tasks, onDeleteTask, onEditTask, onToggleTask, selectedTitle }) => {
     return (
@@ -11,7 +11,9 @@ const TaskList = ({ tasks, onDeleteTask, onEditTask, onToggleTask, selectedTitle
                     <p>Please select a title to view or manage tasks.</p>
                 </div>
             ) : tasks.length === 0 ? (
-                <p>No tasks available.</p>
+                <div>
+                <p>No tasks available.Click "Add Task" to get started!</p>
+                </div>
             ) : (
                 <ul style={{ listStyleType: 'none', padding: 0 }}>
                     {tasks.map(task => (

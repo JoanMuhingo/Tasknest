@@ -1,0 +1,40 @@
+.navbar {
+    background-color: var(--primary-color);
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    gap: 25px;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar a,
+.logout-btn {
+    color: white;
+    text-decoration: none;
+    font-size: 1.1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    padding: 8px 12px;
+    border-radius: 5px;
+}
+
+.navbar a:hover,
+.logout-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    text-decoration: none;
+}

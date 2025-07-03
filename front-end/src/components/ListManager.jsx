@@ -1,15 +1,28 @@
 // ListManager.jsx
-import React, { useState } from 'react';
-import axios from 'axios';
-import './ListManager.module.css';
-const ListManager = ({ titles, setTitles, onSelectTitle }) => {
+import React, { useEffect, useState } from 'react';
+import authAxios from './authAxios';
+import './ListManager.css';
+const ListManager = ({ titles, setTitles, onSelectTitle, selectedTitleId }) => {
     const [newTitle, setNewTitle] = useState('');
+
+    useEffect(() => {
+        const fetchTitles = async () => {
+            try {
+                const response = await authAxios.get("/titles");
+                setTitles(response.data);
+            } catch (error) {
+                console.error("Error fetching titles:", error);
+                alert("Failed to fetch titles. Please log in again.");
+            }
+        };
+
+        fetchTitles();
+    }, [setTitles]);
 
     const addTitle = async () => {
         if (!newTitle.trim()) return;
-
         try {
-            const response = await axios.post('http://localhost:5000/titles', { name: newTitle });
+            const response = await authAxios.post('/titles', {name: newTitle.trim()});
             setTitles([...titles, response.data]);
             setNewTitle('');
             onSelectTitle(response.data.id);
@@ -23,7 +36,7 @@ const ListManager = ({ titles, setTitles, onSelectTitle }) => {
         if (!window.confirm('Are you sure you want to delete this title and all its tasks?')) return;
 
         try {
-            await axios.delete(`http://localhost:5000/titles/${titleId}`);
+            await authAxios.delete(`/titles/${titleId}`);
             setTitles(titles.filter(title => title.id !== titleId));
             onSelectTitle(null);
         } catch (error) {
@@ -40,16 +53,23 @@ const ListManager = ({ titles, setTitles, onSelectTitle }) => {
                   <p>No titles available. Please add a title to get started!</p>
               </div>
           ) : (
-              <ul style={{ listStyleType: 'none', padding: 0 }}>
+              <ul>
                   {titles.map(title => (
-                      <li key={title.id} style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>
-                          <span
-                              onClick={() => onSelectTitle(title.id)}
-                              style={{ cursor: 'pointer', flexGrow: 1 }}
+                      <li 
+                        key={title.id} 
+                        className={`title-card ${title.id === selectedTitleId ? 'selected' : ''}`}
+                        onClick={() => onSelectTitle(title.id)}
+                        >
+                          <span className='title-name'>{title.name} </span>
+                          <button
+                            className='delete-button'
+                            onClick={(e) => {
+                                e.stopPropagation(); //prevents onclick from firing//
+                                deleteTitle(title.id);
+                            }}
                           >
-                              {title.name}
-                          </span>
-                          <button onClick={() => deleteTitle(title.id)} style={{ padding: '2px 5px' }}>Delete</button>
+                            Delete
+                          </button>          
                       </li>
                   ))}
               </ul>

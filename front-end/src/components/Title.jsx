@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import authAxios from "/authAxios";
 
 function Title({ title, onTitleUpdate, onDeleteTitle }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -7,9 +7,11 @@ function Title({ title, onTitleUpdate, onDeleteTitle }) {
 
   const handleTitleEdit = async () => {
     if (!newTitleName.trim()) return;
+    const token = localStorage.getItem("token")
     try {
-      // Assuming you have a function to update the title in your backend
-      const response = await axios.put(`http://localhost:5000/titles/${title.id}`, { name: newTitleName });
+      // to update the title in your backend
+      const response = await authAxios.put(`/titles/${title.id}`, 
+      { name: newTitleName });
       onTitleUpdate(response.data);
       setIsEditing(false);
     } catch (error) {
@@ -18,8 +20,9 @@ function Title({ title, onTitleUpdate, onDeleteTitle }) {
   };
 
   const handleDeleteTitle = async () => {
+    const token = localStorage.getItem("token");
     try {
-      await axios.delete(`http://localhost:5000/titles/${title.id}`);
+      await authAxios.delete( `/titles/${title.id}` );
       onDeleteTitle(title.id);
     } catch (error) {
       console.error('Error deleting title:', error);

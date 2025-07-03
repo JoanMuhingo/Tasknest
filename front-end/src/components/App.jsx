@@ -1,48 +1,66 @@
-// App.js
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import ListManager from './ListManager';
-import TaskManager from './TaskManager';
-import './variables.css';
+import { Routes, Route, Navigate, useNavigate, BrowserRouter } from "react-router-dom";
+import Login from "./Login";
+import SignUp from "./SignUp";
+import Home from "./Home";
+import { useEffect, useState } from "react";
+import Navbar from "./Navbar";
+import authAxios from "./authAxios";
 
+export default function AppRoutes() {
+  const [isAuth, setIsAuth] = useState(!!localStorage.getItem('token'));
+  const navigate = useNavigate();
 
-const App = () => {
-    const [titles, setTitles] = useState([]);
-    const [selectedTitleId, setSelectedTitleId] = useState(null);
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsAuth(false);
+  }
 
-    // Fetch all titles on component mount
-    useEffect(() => {
-        const fetchTitles = async () => {
-            try {
-                const response = await axios.get('http://localhost:5000/titles');
-                setTitles(response.data);
-            } catch (error) {
-                console.error('Error fetching titles:', error);
-                alert('Failed to fetch titles. Please try again.');
-            }
-        };
-
-        fetchTitles();
-    }, []);
-
-    const handleSelectTitle = (id) => {
-        setSelectedTitleId(id);
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setIsAuth(!!localStorage.getItem('token'));
     };
 
-    return (
-        <div className="App" style={{ display: 'flex', padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-            <div style={{ width: '30%', marginRight: '20px' }}>
-                <ListManager titles={titles} setTitles={setTitles} onSelectTitle={handleSelectTitle} />
-            </div>
-            <div style={{ width: '70%' }}>
-                {selectedTitleId ? (
-                    <TaskManager selectedTitleId={selectedTitleId} />
-                ) : (
-                    <p>Select a title to view its tasks.</p>
-                )}
-            </div>
-        </div>
-    );
-};
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
-export default App;
+  useEffect(() => {
+    const interceptor = authAxios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (
+          error.response &&
+          error.response.status === 401 &&
+          error.response.data.msg?.toLowerCase().includes('token')
+        ) {
+          alert('Oops! You have been inactive for a while. Kindly log in again.');
+          localStorage.removeItem('token');
+          setIsAuth(false);
+          navigate('/login');
+        }
+        return Promise.reject(error);
+      }
+    );
+    return () => {
+      authAxios.interceptors.response.eject(interceptor);
+    };
+  }, [navigate]);
+
+  return (
+    <>
+    {isAuth && <Navbar onLogout={handleLogout} />}
+    <Routes>
+      {/* Public Routes */}
+      <Route path="/" element={<Navigate to="/login" />} />
+      <Route path="/login" element={<Login onLogin={() => setIsAuth(true)} />} />
+      <Route path="/signUp" element={<SignUp />} />
+
+      {/* Protected Route */}
+      <Route
+        path="/home"
+        element={isAuth ? <Home /> : <Navigate to="/login" />}
+    />
+    </Routes>
+    </>
+  );
+}

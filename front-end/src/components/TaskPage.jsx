@@ -1,6 +1,6 @@
 // TaskPage.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import authAxios from '/authAxios';
 import ListManager from './ListManager';
 import TaskManager from './TaskManager';
 
@@ -10,7 +10,7 @@ const TaskPage = () => {
 
   const fetchTitles = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/titles');
+      const response = await authAxios.get('/titles');
       setTitles(response.data);
     } catch (error) {
       console.error('Error fetching titles:', error);

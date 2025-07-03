@@ -1,6 +1,6 @@
 // TaskForm.jsx
 import React, { useState } from 'react';
-import './TaskForm.module.css';
+import './TaskForm.css';
 
 const TaskForm = ({ onAddTask }) => {
     const [description, setDescription] = useState('');
@@ -25,7 +25,7 @@ const TaskForm = ({ onAddTask }) => {
                     type="text"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Task Description"
+                    placeholder=" Enter Task Description here."
                     required
                     style={{ width: '100%', padding: '5px' }}
                 />
